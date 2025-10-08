@@ -6,19 +6,29 @@ class DefinitionAPI {
   }
 
   async #fetchJSON(url, options = {}) {
-    const res = await fetch(url, { mode: "cors", ...options });
-    const data = await res.json().catch(() => null);
-    return { ok: res.ok, status: res.status, data };
+    try {
+      const res = await fetch(url, { mode: "cors", ...options });
+      const data = await res.json().catch(() => null);
+      return { ok: res.ok, status: res.status, data };
+    } catch (err) {
+      // Network error or CORS failure — return structured error instead of throwing
+      return { ok: false, status: 0, data: { message: err?.message ?? "Network error" }, error: err };
+    }
   }
 
   // GET /api/definitions/?word=book
   async getDefinition(word) {
-    const url = `${this.baseUrl}/?word=${encodeURIComponent(word)}`;
-    return this.#fetchJSON(url, { method: "GET" });
+    // Build URL using the URL API to handle trailing slashes robustly
+    const urlObj = new URL(this.baseUrl);
+    urlObj.searchParams.set("word", word);
+    console.log(`Full URL: ${urlObj.href}`); // e.g. "http://localhost:3000/api/definitions/?word=book"
+    return this.#fetchJSON(urlObj.href, { method: "GET" });
   }
 
   // POST /api/definitions body: { word, definition }
   async createDefinition(word, definition) {
+    // Log the POST target for debugging
+    console.log(`POST URL: ${this.baseUrl}`);
     return this.#fetchJSON(this.baseUrl, {
       method: "POST",
       headers: { "Content-Type": "application/json" },

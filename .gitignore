@@ -1,0 +1,31 @@
+# Node deps
+node_modules/
+
+# Local proxy log
+/tmp/proxy.log
+
+# Environment files
+.env
+
+# Vercel outputs
+.vercel/
+
+# OS files
+.DS_Store
+
+# Editor files
+.vscode/
+*.swp
+
+# npm logs
+npm-debug.log*
+
+# Mac-specific
+Icon\r
+
+# Python temp
+__pycache__/
+
+# Build output (if you add a build step)
+dist/
+build/

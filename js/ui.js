@@ -49,16 +49,20 @@ class StorePageController extends PageController {
 
     try {
       const { ok, status, data } = await createDefinition(word.trim(), def.trim());
-      
+
       if (!ok) {
-        return this.setOutput(this.outEl, `${STR.serverErr} (${status})`, "danger");
+        // If server provided a JSON message, show it (use warning for conflict)
+        const serverMsg = data?.message ?? STR.serverErr;
+        const alertType = status === 409 ? "warning" : "danger";
+        return this.setOutput(this.outEl, this.buildResponseMessage(data, serverMsg), alertType);
       }
 
       const msg = data?.message ?? (data?.exists ? STR.alreadyExists : STR.successSave);
       const alertType = data?.exists ? "warning" : "success";
       this.setOutput(this.outEl, this.buildResponseMessage(data, msg), alertType);
-    } catch {
-      this.setOutput(this.outEl, STR.serverErr, "danger");
+    } catch (err) {
+      // Network or unexpected error
+      this.setOutput(this.outEl, `${STR.serverErr} (${err?.message ?? ""})`, "danger");
     }
   }
 }
@@ -87,14 +91,23 @@ class SearchPageController extends PageController {
       const { ok, status, data } = await getDefinition(q.trim());
 
       if (!ok) {
-        const req = data?.requestCount != null ? ` • ${STR.reqCount(data.requestCount)}` : "";
-        return this.setOutput(this.outEl, `${STR.notFound}${req} (HTTP ${status})`, "warning");
+        // Prefer server-provided message when available
+        const serverMsg = data?.message ?? STR.notFound;
+        // Show HTTP status and a raw JSON preview to make debugging easier in the UI
+        const rawJson = data ? ` ${JSON.stringify(data)}` : "";
+        return this.setOutput(
+          this.outEl,
+          this.buildResponseMessage(data, `${serverMsg} (HTTP ${status})${rawJson}`),
+          "warning"
+        );
       }
 
       const message = `${data.word}: ${data.definition}`;
       this.setOutput(this.outEl, this.buildResponseMessage(data, message), "success");
-    } catch {
-      this.setOutput(this.outEl, STR.serverErr, "danger");
+    } catch (err) {
+      // Include the underlying error message when available to aid debugging (e.g. CORS/mixed-content)
+      const errMsg = err?.message ?? '';
+      this.setOutput(this.outEl, `${STR.serverErr}${errMsg ? ` (${errMsg})` : ''}`, "danger");
     }
   }
 }
