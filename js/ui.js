@@ -2,6 +2,7 @@ import { STR } from "./strings.js";
 import { isValidWord, isValidDefinition } from "./validation.js";
 import { createDefinition, getDefinition } from "./api.js";
 
+
 class PageController {
   constructor(title) {
     document.title = title;

@@ -1,5 +1,4 @@
 // Strings.js contains all the text and definitions that is required to run the app
-// User-facing strings stored in a separate file as per assignment requirements
 
 export const STR = {
   // Page titles
@@ -28,5 +27,3 @@ export const STR = {
   reqCount: (n) => `Request #${n}`,
   entryCount: (n) => `Total entries: ${n}`
 };
-
-// Attribution: ChatGPT (https://chat.openai.com/) was used to help structure this strings file.
