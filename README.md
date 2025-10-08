@@ -42,13 +42,14 @@ export const API_BASE = "https://dictionary-api-n9tx.onrender.com/api/definition
 
 Deploy to Vercel
 
-- Option A: Deploy from GitHub and connect the repo in Vercel (recommended) — every push to `main` will auto-deploy.
+- Option A: Deploy from GitHub and connect the repo in Vercel (recommended) — every push to `main` will auto-deploy. Set the project name to `dictionary-client` when prompted.
 - Option B: Deploy from CLI:
 
 ```bash
 npm i -g vercel
 vercel login
-vercel --prod
+# interactive: when asked for project name, enter "dictionary-client"
+vercel --prod --name dictionary-client
 ```
 
 CORS reminder

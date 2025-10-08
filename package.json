@@ -1,5 +1,5 @@
 {
-  "name": "isalab4-local-proxy",
+  "name": "dictionary-client",
   "version": "1.0.0",
   "description": "Local proxy to forward API calls to partner API and inject CORS for local testing",
   "main": "server/proxy.js",
